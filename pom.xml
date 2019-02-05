@@ -12,8 +12,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.thorntail>2.2.0.Final</version.thorntail>
-    <version.spring-boot>1.5.10.RELEASE</version.spring-boot>
+    <version.thorntail>2.3.0.Final</version.thorntail>
+    <version.spring-boot>1.5.19.RELEASE</version.spring-boot>
     <version.dropwizard>1.0.9</version.dropwizard>
 
     <version.h2>1.4.196</version.h2>

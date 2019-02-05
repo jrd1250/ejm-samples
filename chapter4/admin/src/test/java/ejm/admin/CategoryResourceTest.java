@@ -1,5 +1,6 @@
 package ejm.admin;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -160,7 +161,7 @@ public class CategoryResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(400);
         assertThat(response.getBody().asString()).contains("Validation failed for classes [ejm.admin.model.Category] during persist time for groups [javax.validation.groups.Default, ]\n" +
                                                                    "List of constraint violations:[\n" +
-                                                                   "\tConstraintViolationImpl{interpolatedMessage='may not be null', propertyPath=name, rootBeanClass=class ejm.admin.model.Category, messageTemplate='{javax.validation.constraints.NotNull.message}'}\n" +
+                                                                   "\tConstraintViolationImpl{interpolatedMessage='must not be null', propertyPath=name, rootBeanClass=class ejm.admin.model.Category, messageTemplate='{javax.validation.constraints.NotNull.message}'}\n" +
                                                                    "]");
 
         response =
@@ -173,5 +174,78 @@ public class CategoryResourceTest {
         List<Map<String, ?>> jsonAsList = JsonPath.from(jsonAsString).getList("");
 
         assertThat(jsonAsList.size()).isEqualTo(22);
+    }
+
+    @Test
+    public void eUpdateCategory() throws Exception {
+        Response response =
+                given()
+                        .pathParam("categoryId", 1014)
+                        .when()
+                        .get("/admin/category/{categoryId}")
+                        .then()
+                        .extract().response();
+
+        String jsonAsString = response.asString();
+
+        Category category = JsonPath.from(jsonAsString).getObject("", Category.class);
+        Integer oldId = category.getId();
+        String oldName = category.getName();
+        LocalDateTime oldCreated = category.getCreated();
+        String oldHeader = category.getHeader();
+        String oldImagePath = category.getImagePath();
+        Category oldParent = category.getParent();
+        LocalDateTime oldUpdated = category.getUpdated();
+        Integer oldVersion = category.getVersion();
+        category.setName("JEEP");
+
+        Response response1 =
+                given()
+                        .contentType(ContentType.JSON)
+                        .body(category)
+                .when()
+                        .put("/admin/category/" + category.getId());
+
+        Response response2 =
+                given()
+                        .pathParam("categoryId", 1014)
+                        .when()
+                        .get("/admin/category/{categoryId}")
+                        .then()
+                        .extract().response();
+
+        jsonAsString = response2.asString();
+
+        category = JsonPath.from(jsonAsString).getObject("", Category.class);
+
+        assertThat(oldId == null || oldId.equals(category.getId()));
+        assertThat(oldName == null || !oldName.equals(category.getName()));
+        assertThat(oldCreated == null || oldCreated.equals(category.getCreated()));
+        assertThat(oldHeader == null || oldHeader.equals(category.getHeader()));
+        assertThat(oldImagePath == null || oldImagePath.equals(category.getImagePath()));
+        assertThat(oldParent == null || oldParent.equals(category.getParent()));
+        assertThat(oldUpdated == null || oldUpdated.equals(category.getUpdated()));
+        assertThat(oldVersion == null || oldVersion.equals(category.getVersion()));
+    }
+
+    @Test
+    public void fRemoveCategory() throws Exception {
+        Response response =
+                given()
+                        .pathParam("categoryId", 1014)
+                        .when()
+                        .delete("/admin/category/{categoryId}")
+                        .then()
+                        .extract().response();
+
+        Response response1 =
+                given()
+                        .pathParam("categoryId", 1014)
+                        .when()
+                        .get("/admin/category/{categoryId}")
+                        .then()
+                        .extract().response();
+
+        assertThat(response1.statusCode() != 200);
     }
 }

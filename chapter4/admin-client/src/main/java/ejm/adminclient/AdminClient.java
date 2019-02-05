@@ -2,6 +2,7 @@ package ejm.adminclient;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -40,4 +41,5 @@ public class AdminClient {
                 .registerModule(new JavaTimeModule())
                 .readValue(jsonResponse, Category.class);
     }
+
 }

@@ -64,7 +64,7 @@ public class CategoryTest {
     }
 
     //Uncomment @Test when code fixed from reading chapter 4
-    //@Test
+    @Test
     public void categoriesWithIdenticalParentIdAreEqual() throws Exception {
         LocalDateTime now = LocalDateTime.now();
         Category parent1 = createParentCategory(1, "Top", now);
